@@ -1,0 +1,29 @@
+- hosts: all
+  connection: network_cli
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Retrieve current config
+      awplus_command:
+        commands:
+          - show running-config
+      register: current_config
+
+    - name: Save current config to a file
+      ansible.builtin.copy:
+        content: "{{ current_config.stdout }}"
+        dest: "{{ ansible_host }}_current_config.txt"
+
+    - name: Remove test user if they already exist
+      awplus_user:
+        config:
+          name: track_and_notify_changes_example_user
+          configured_password: test
+        state: deleted
+
+    - name: Add test user
+      awplus_user:
+        config:
+          name: track_and_notify_changes_example_user
+          configured_password: test
+        state: merged
