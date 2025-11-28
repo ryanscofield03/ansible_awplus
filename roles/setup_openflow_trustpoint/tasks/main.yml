@@ -3,7 +3,7 @@
 # assumes trustpoint and controller's CA certificate are setup on the device as this cannot be automated yet
 
 - name: Specify trustpoint to OpenFlow
-  awplus_openflow:
+  alliedtelesis.awplus.awplus_openflow:
     config:
       trustpoint: "{{ trustpoint_name }}"
       peer_certificate: "{{ controller_peer_certificate }}"

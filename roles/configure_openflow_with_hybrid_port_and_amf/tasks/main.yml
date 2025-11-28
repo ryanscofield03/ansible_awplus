@@ -9,14 +9,14 @@
   ansible.builtin.meta: reset_connection
     
 - name: Create VLANs for the OpenFlow protocol's native VLAN and for native packets received on legacy ports
-  awplus_vlans:
+  alliedtelesis.awplus.awplus_vlans:
     config:
       - vlan_id: "{{ native_vlan_id }}"
       - vlan_id: "{{ legacy_ports_vlan_id }}"
     state: merged
 
 - name: Configure AMF link, disable the ingress-filter, add management VLAN(s) to the hybrid port, and enable openflow
-  awplus_config:
+  alliedtelesis.awplus.awplus_config:
     lines:
       - switchport atmf-link
       - switchport mode trunk ingress-filter disable
@@ -27,7 +27,7 @@
     - "interface {{ amf_link_port }}"
 
 - name: Add OpenFlow controller
-  awplus_openflow:
+  alliedtelesis.awplus.awplus_openflow:
     config:
       controllers:
         - name: "{{ controller_name }}"
@@ -37,25 +37,25 @@
     state: merged
 
 - name: Configure native VLAN 
-  awplus_openflow:
+  alliedtelesis.awplus.awplus_openflow:
     config:
       native_vlan: "{{ native_vlan_id }}"
     state: merged
 
 - name: Enable ports to be managed by the OpenFlow protocol
-  awplus_openflow:
+  alliedtelesis.awplus.awplus_openflow:
     config:
       ports: "{{ openflow_ports }}"
     state: merged
 
 - name: Disable RSTP and loop protection
-  awplus_config:
+  alliedtelesis.awplus.awplus_config:
     lines:
       - no spanning-tree rstp enable
       - no loop-protection loop-detect
 
 - name: Disable IGMP Snooping TCN Query Solicitation
-  awplus_config:
+  alliedtelesis.awplus.awplus_config:
     lines:
       - no ip igmp snooping tcn query solicit
     parents: "{{ item }}"
@@ -63,7 +63,7 @@
     - "interface vlan{{ native_vlan_id }}"
 
 - name: Configure inactivity timeout and behaviour
-  awplus_openflow:
+  alliedtelesis.awplus.awplus_openflow:
     config:
       inactivity_timer: "{{ inactivity_timer }}"
       fail_mode: "{{ fail_mode }}"

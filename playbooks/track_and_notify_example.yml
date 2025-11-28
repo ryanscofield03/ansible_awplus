@@ -4,7 +4,7 @@
     - alliedtelesis.awplus
   tasks:
     - name: Retrieve current config
-      awplus_command:
+      alliedtelesis.awplus.awplus_command:
         commands:
           - show running-config
       register: current_config
@@ -15,14 +15,14 @@
         dest: "{{ ansible_host }}_current_config.txt"
 
     - name: Remove test user if they already exist
-      awplus_user:
+      alliedtelesis.awplus.awplus_user:
         config:
           name: track_and_notify_changes_example_user
           configured_password: test
         state: deleted
 
     - name: Add test user
-      awplus_user:
+      alliedtelesis.awplus.awplus_user:
         config:
           name: track_and_notify_changes_example_user
           configured_password: test
