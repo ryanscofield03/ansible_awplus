@@ -22,6 +22,7 @@ from ansible.module_utils._text import to_bytes
 
 cur_context = None
 
+
 def set_module_args(args):
     global cur_context
 
@@ -36,7 +37,7 @@ def set_module_args(args):
         except Exception:
             pass
         cur_context = None
-    
+
     try:
         from ansible.module_utils.testing import patch_module_args
         cur_context = patch_module_args(args)

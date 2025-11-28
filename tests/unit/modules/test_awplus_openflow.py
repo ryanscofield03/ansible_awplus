@@ -168,7 +168,6 @@ class TestAwplusOpenFlowModule(TestAwplusModule):
         ]
         self.execute_module(failed=False, changed=True, commands=commands)
 
-
     def test_awplus_openflow_replace_nonexisting_controllers(self):
         """
         Nonexisting controller is not replaced with new controller
