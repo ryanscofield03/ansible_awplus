@@ -222,9 +222,9 @@ class Openflow(ConfigBase):
         elif state == 'merged':
             for h_name in haves:
                 if h_name in wants \
-                    and (wants[h_name]['protocol'] is None or wants[h_name]['protocol'] == haves[h_name]['protocol']) \
-                    and (wants[h_name]['address'] is None or clean_address_string(wants[h_name]['address']) == clean_address_string(haves[h_name]['address'])) \
-                    and (wants[h_name]['l4_port'] is None or str(wants[h_name]['l4_port']) == str(haves[h_name]['l4_port'])):
+                        and (wants[h_name]['protocol'] is None or wants[h_name]['protocol'] == haves[h_name]['protocol']) \
+                        and (wants[h_name]['address'] is None or clean_address_string(wants[h_name]['address']) == clean_address_string(haves[h_name]['address'])) \
+                        and (wants[h_name]['l4_port'] is None or str(wants[h_name]['l4_port']) == str(haves[h_name]['l4_port'])):
                     ignore_names.append(h_name)
 
         # Delete controllers based on parameters.

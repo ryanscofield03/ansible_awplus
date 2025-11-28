@@ -227,7 +227,7 @@ def _set_config(name, want, have):
                     else have.get(key, {}).get(tlv, False)
                 if have_stat != stat:
                     prefix = "" if stat else "no "
-                    commands.append(f"{prefix}lldp med-tlv-select {tlv.replace('_','-')}")
+                    commands.append(f"{prefix}lldp med-tlv-select {tlv.replace('_', '-')}")
 
     if commands:
         commands.insert(0, f"interface {name}")
