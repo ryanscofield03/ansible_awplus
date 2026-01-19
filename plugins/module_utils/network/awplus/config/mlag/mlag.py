@@ -7,7 +7,7 @@
 The awplus_mlag class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
-necessary to bring the current configuration to it's desired end-state is
+necessary to bring the current configuration to its desired end-state is
 created
 """
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
