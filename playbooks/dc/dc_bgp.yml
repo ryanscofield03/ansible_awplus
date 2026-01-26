@@ -1,0 +1,69 @@
+---
+- name: Setup VLAN
+  connection: network_cli
+  hosts: all
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Setup VRF
+      alliedtelesis.awplus.awplus_vrf:
+        config: 
+          id: "{{ vrf_id }}"
+          name: "{{ vrf_name }}"
+        state: merged
+
+    - name: Setup BGP global
+      alliedtelesis.awplus.awplus_bgp:
+        config:
+          bgp_as: "{{ bgp_as }}"
+          router_id: "{{ router_id }}"
+          ebgp_requires_policy: "{{ ebgp_requires_policy }}"
+          network_import_check: "{{ network_import_check }}"
+        state: merged
+
+    - name: Setup BGP IPv4 redistibutions
+      alliedtelesis.awplus.awplus_bgp:
+        config:
+          bgp_as: "{{ bgp_as }}"
+          ipv4_address_family: 
+            vrf: "{{ vrf_name }}"
+            redistribute: 
+              protocol: "{{ item['protocol'] }}"
+              route_map: "{{ item['route_map'] }}"
+        state: merged
+      loop: "{{ redistibutions }}"
+
+    - name: Setup BGP L2VPN global
+      alliedtelesis.awplus.awplus_bgp:
+        config:
+          bgp_as: "{{ bgp_as }}"
+          l2vpn_address_family:
+            advertise_all_vni: "{{ advertise_all_vni }}"
+        state: merged
+
+    - name: Setup BGP L2VPN neighbors
+      alliedtelesis.awplus.awplus_bgp:
+        config:
+          bgp_as: "{{ bgp_as }}"
+          neighbors:
+            neighbor: "{{ item['neighbor_address'] }}"
+            remote_as: "{{ item['remote_as'] }}"
+          l2vpn_address_family:
+            neighbors:
+              neighbor: "{{ item['neighbor_address'] }}"
+              activate: "{{ item['activated'] }}"
+        state: merged
+      loop: "{{ redistibutions }}"
+
+    - name: Setup BGP L2VPN advertisements
+      alliedtelesis.awplus.awplus_bgp:
+        config:
+          bgp_as: "{{ bgp_as }}"
+          l2vpn_address_family:
+            vrfs: 
+              vrf: "{{ vrf_name }}"
+              advertisements:
+                protocol: "{{ item['protocol'] }}"
+                route_map: "{{ item['route_map'] }}"
+        state: merged
+      loop: "{{ advertisements }}"

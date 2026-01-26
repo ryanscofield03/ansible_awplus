@@ -1,0 +1,35 @@
+---
+- name: Setup VLAN
+  connection: network_cli
+  hosts: all
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Setup MLAG
+      alliedtelesis.awplus.awplus_mlag:
+        config:
+          domain_id: "{{ domain_id }}"
+          peer_link: "{{ peer_link_port }}"
+          source_address: "{{ source_address }}"
+          peer_address: "{{ peer_address }}"
+          keepalive_interval: "{{ keepalive_interval }}"
+          session_timeout: "{{ session_timeout }}"
+        state: merged
+
+    - name: Delete MLAG param
+      alliedtelesis.awplus.awplus_mlag:
+        config:
+          domain_id: "{{ domain_id }}"
+          peer_link: "{{ peer_link_port }}"
+          source_address: "{{ source_address }}"
+          peer_address: "{{ peer_address }}"
+          keepalive_interval: "{{ keepalive_interval }}"
+          session_timeout: "{{ session_timeout }}"
+        state: deleted
+
+    - name: Teardown MLAG
+      alliedtelesis.awplus.awplus_mlag:
+        config:
+          domain_id: "{{ domain_id }}"
+        state: deleted
+          

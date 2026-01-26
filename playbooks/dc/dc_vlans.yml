@@ -1,0 +1,43 @@
+---
+- name: Setup VLAN
+  connection: network_cli
+  hosts: all
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Create VLAN
+      alliedtelesis.awplus.awplus_vlans:
+        config:
+          - vlan_id: "{{ vlan_id }}"
+            state: active
+        state: merged
+
+    - name: Add address to VLAN
+      alliedtelesis.awplus.awplus_l3_interfaces:
+        config:
+          - name: "vlan{{ vlan_id }}"
+            ipv4:
+              - address: "{{ vlan_address }}/31"
+        state: merged
+
+    - name: Add VLAN to port
+      alliedtelesis.awplus.awplus_l2_interfaces:
+        config:
+          - name: "{{ port_name }}"
+            access:
+              vlan: "{{ vlan_id }}"
+        state: merged
+
+    - name: Delete VLAN
+      alliedtelesis.awplus.awplus_vlans:
+        config:
+          - vlan_id: "{{ vlan_id }}"
+        state: deleted
+
+    - name: Remove VLAN from port
+      alliedtelesis.awplus.awplus_l2_interfaces:
+        config:
+          - name: "{{ port_name }}"
+            access:
+              vlan: "{{ vlan_id }}"
+        state: deleted

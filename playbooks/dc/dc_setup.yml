@@ -1,0 +1,43 @@
+---
+- name: Setup platform config
+  connection: network_cli
+  hosts: all
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Change platform config
+      awplus_config:
+        lines:
+          - platform acls-to-vlanclassifiers half-and-half tunnel-support
+          - platform inter-chip-header 4-word
+          - platform jumboframe
+
+    - name: Service modules
+      awplus_config:
+        lines:
+          - service bgp evpn
+          - service mlag
+
+    - name: Write file
+      awplus_command:
+        commands:
+          - write file
+
+    - name: Restart device
+      awplus_command:
+        commands:
+          - command: reboot
+            prompt: "reboot system?"
+            answer: y
+      poll: 0
+      async: 1
+
+    - name: Wait for the device to start
+      wait_for:
+        state: started
+        port: 22
+        host: "{{ ansible_host }}"
+        delay: 60
+        timeout: 300
+        connect_timeout: 300
+      delegate_to: network_cli

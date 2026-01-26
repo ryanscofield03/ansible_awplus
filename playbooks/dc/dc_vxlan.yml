@@ -1,0 +1,52 @@
+---
+- name: Setup VLAN
+  connection: network_cli
+  hosts: all
+  collections:
+    - alliedtelesis.awplus
+  tasks:
+    - name: Setup loopback interface address
+      alliedtelesis.awplus.awplus_l3_interfaces:
+        config:
+          - name: lo
+            ipv4:
+              - address: "{{ lo_address }}/32"
+        state: merged
+
+    - name: Create VLAN
+      alliedtelesis.awplus.awplus_vlans:
+        config:
+          - vlan_id: "{{ vlan_id }}"
+            state: active
+        state: merged
+
+    - name: Add VLAN to port
+      alliedtelesis.awplus.awplus_l2_interfaces:
+        config:
+          name: "{{ port_name }}"
+          trunk:
+            allowed_vlans: 
+              - "{{ vlan_id }}"
+
+    - name: Create VXLAN tunnels
+      alliedtelesis.awplus.awplus_vxlan:
+        config:
+          l2_vnis:
+            - vlan: "{{ item['vlan_id'] }}"
+              vni: "{{ item['vni'] }}"
+        state: merged
+      loop: "{{ l2_vnis }}"
+
+    - name: Destroy VXLAN tunnels
+      alliedtelesis.awplus.awplus_vxlan:
+        config:
+          l2_vnis:
+            - vlan: "{{ item['vlan_id'] }}"
+        state: deleted
+      loop: "{{ l2_vnis }}"
+
+    - name: Delete VLAN
+      alliedtelesis.awplus.awplus_vlans:
+        config:
+          - vlan_id: "{{ vlan_id }}"
+        state: deleted
