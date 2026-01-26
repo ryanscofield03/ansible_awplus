@@ -32,4 +32,3 @@
         config:
           domain_id: "{{ domain_id }}"
         state: deleted
-          
